@@ -1,0 +1,957 @@
+/* ==========================================================================
+   Celadon Mist (青雾) — 通用水系浅色主题：桌面素笺、青瓷点睛
+   --------------------------------------------------------------------------
+   设计理念：
+   1. 桌面素笺：窗体是冷雾灰的"书桌"，正文是一张带细描边与柔影的白纸，
+      视线自然收拢到版心，长时间阅读与写作都不涣散。
+   2. 青瓷点睛：只用一个克制的青瓷青作强调（链接、列表符号、勾选、搜索），
+      其余交给中性灰阶，不与正文争权重。
+   3. 通用耐看：人文无衬线 + 1.75 行高 + 820px 版心，中英混排、技术文档、
+      笔记与长文皆宜；不依赖任何网络字体与图片资源。
+   --------------------------------------------------------------------------
+   安装：把本文件放进 Typora 主题目录（偏好设置 → 外观 → 打开主题文件夹），
+         重启 Typora 后在「主题」菜单选择 "Celadon Mist"。
+   微调：新建同名的 celadon-mist.user.css 覆盖下方 :root 变量即可，
+         例如 `:root { --primary-color: #b4534b; --font-sans: Georgia, serif; }`
+   规范：文件名小写 + `-`；UTF-8 保存；body 背景为浅色（保证 Win/Linux 判定为浅色模式）。
+   ========================================================================== */
+
+/* 导出 PDF/HTML 时如需统一字体，可取消下一行注释（Typora 专有指令，默认关闭以离线可用） */
+/* @include-when-export url(https://fonts.loli.net/css?family=Noto+Sans+SC:400,500,700&subset=latin,latin-ext); */
+
+/* ------------------------------- 1. 变量表 --------------------------------
+   所有颜色都集中在这里，改主题只改这一节就够了。                        */
+:root {
+    /* 纸与桌：--bg-color 是"纸"（正文与弹层），--desk-color 是"桌"（窗体底色） */
+    --bg-color: #ffffff;
+    --desk-color: #eaeeed;
+    --side-bar-bg-color: #e5eae9;
+    --card-bg: #f6f9f8;
+
+    /* 文字：深灰绿而非纯黑，正文对比度约 10:1 */
+    --text-color: #36403e;
+    --text-muted: #6d7a77;
+    --heading-color: #1d2726;
+
+    /* 主色：青瓷青 */
+    --primary-color: #0f766e;
+    --primary-color-hover: #0a5b55;
+    --primary-color-light: rgba(15, 118, 110, 0.08);
+    --primary-color-lighter: rgba(15, 118, 110, 0.04);
+    --primary-line: rgba(15, 118, 110, 0.32);
+    --primary-btn-border-color: #0f766e;
+    --primary-btn-text-color: #ffffff;
+
+    /* 线：三级浅灰绿描边 */
+    --border-color: #dde5e3;
+    --border-strong: #c7d3d0;
+    --border-light: #eef2f1;
+    --window-border: 1px solid #dfe6e4;
+
+    /* Markdown 元字符与元内容（* ` [ ]、图片 alt、链接地址） */
+    --md-char-color: #b3beb9;
+    --meta-content-color: #5c8f89;
+
+    /* 代码 */
+    --code-bg: #f5f8f7;
+    --code-border: #e4ebe9;
+    --code-text: #2f3b39;
+    --inline-code-bg: #f1f6f4;
+    --inline-code-border: #dae7e3;
+    --inline-code-text: #0c6259;
+
+    /* 侧边栏与控件状态 */
+    --active-file-bg-color: #d8e4e1;
+    --active-file-text-color: #0a5b55;
+    --active-file-border-color: #0f766e;
+    --item-hover-bg-color: rgba(54, 64, 62, 0.06);
+    --item-hover-text-color: #1d2726;
+    --control-text-color: #6d7a77;
+    --control-text-hover-color: #1d2726;
+
+    /* 选中 / 搜索 / 聚焦淡化 */
+    --select-text-bg-color: #c6e5e0;
+    --select-text-font-color: inherit;
+    --search-select-bg-color: #ffdf7e;
+    --search-select-text-color: #4a3200;
+    --blur-text-color: rgba(54, 64, 62, 0.30);
+
+    /* 行内高亮 ==text== */
+    --mark-bg: #fbeecb;
+    --mark-text: #5b4212;
+
+    /* 字体栈：无衬线正文 + 等宽代码，均可在 user.css 里替换 */
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei UI", "Microsoft YaHei",
+                 "Noto Sans SC", "Source Han Sans SC", "Helvetica Neue", Arial, sans-serif;
+    --font-heading: var(--font-sans);
+    /* 想要标题用衬线、正文保持无衬线时，把上面一行换成：
+       --font-heading: "Noto Serif SC", "Source Han Serif SC", "Songti SC", Georgia, serif; */
+    --monospace: "JetBrains Mono", "Cascadia Code", "Fira Code", "SF Mono",
+                 Menlo, Consolas, "Liberation Mono", monospace;
+
+    /* 圆角与阴影：全站统一节奏 */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sheet: 0 1px 2px rgba(24, 42, 39, 0.05), 0 8px 26px -10px rgba(24, 42, 39, 0.12);
+    --shadow-pop: 0 6px 22px -6px rgba(24, 42, 39, 0.20);
+}
+
+/* ----------------------------- 2. 全局与桌面 ------------------------------ */
+html {
+    /* 基准字号必须写在 html 上，正文全部用 rem，偏好设置的"字号"滑杆才有效 */
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+html, body {
+    /* 桌面底色；浅色主题这里必须是浅色，否则 Win/Linux 会误判为深色模式 */
+    background-color: var(--desk-color);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    line-height: 1.75;
+}
+
+
+/* ------------------------------ 3. 写作区素笺 -----------------------------
+   版心宽度阶梯：窗口越大、纸越宽；小窗口贴合窗口，最大化时不再显得局促。
+   想固定某个宽度，在 celadon-mist.user.css 里写：
+       :root { --write-max-width: 960px !important; }                    */
+:root {
+    --write-max-width: 900px;   /* 约 ≤1280 窗口（含侧边栏） */
+    --write-pad-x: 56px;
+}
+@media only screen and (min-width: 1300px) {
+    :root { --write-max-width: 1010px; --write-pad-x: 60px; }
+}
+@media only screen and (min-width: 1500px) {
+    :root { --write-max-width: 1130px; --write-pad-x: 66px; }
+}
+@media only screen and (min-width: 1800px) {
+    :root { --write-max-width: 1270px; --write-pad-x: 76px; }
+}
+@media only screen and (min-width: 2200px) {
+    :root { --write-max-width: 1440px; --write-pad-x: 88px; }
+}
+
+#write {
+    /* 一张放在桌上的纸：细描边 + 极柔投影，不用重阴影避免"卡片堆卡片" */
+    max-width: var(--write-max-width);
+    width: auto;
+    margin: 24px auto 32px;
+    padding: 48px var(--write-pad-x) 120px;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sheet);
+    color: var(--text-color);
+    font-size: 1rem;
+    text-align: justify;
+    text-justify: inter-ideograph;
+    overflow-x: visible;
+}
+
+/* 窄窗口（含侧边栏挤占时）：纸片贴合窗口，去掉桌面留白 */
+@media only screen and (max-width: 900px) {
+    #write {
+        max-width: none;
+        margin: 0 auto;
+        padding: 28px 22px 80px;
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
+
+/* 中英混排：长英文单词与 URL 不撑破纸面 */
+#write p, #write li, #write td, #write th {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* -------------------------------- 4. 标题 --------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--heading-color);
+    font-weight: 600;
+    line-height: 1.35;
+    cursor: text;
+    margin-top: 1.8em;
+    margin-bottom: 0.65em;
+    letter-spacing: -0.01em;
+}
+
+/* 文档首个标题收紧顶部，避免纸面第一屏大片空白 */
+h1:first-child, h2:first-child, h3:first-child { margin-top: 0.2em; }
+
+/* H1：纸面主标题，细底线 + 左端一小段青瓷刻痕 */
+h1 {
+    font-size: 1.95rem;
+    font-weight: 700;
+    margin-top: 1.2em;
+    padding-bottom: 0.32em;
+    border-bottom: 1px solid var(--border-color);
+}
+h1::after {
+    content: "";
+    display: block;
+    width: 3.4em;
+    height: 2px;
+    margin-top: -3px;
+    border-radius: 2px;
+    background-color: var(--primary-color);
+    opacity: 0.85;
+}
+
+/* H2：分节标题，仅一条更浅的辅助线 */
+h2 {
+    font-size: 1.55rem;
+    padding-bottom: 0.26em;
+    border-bottom: 1px solid var(--border-light);
+}
+
+h3 { font-size: 1.3rem; }
+h4 { font-size: 1.12rem; }
+h5 { font-size: 1rem; color: #45524f; }
+h6 {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+/* 标题里的行内代码收敛尺寸，不顶开行高 */
+h1 code, h2 code, h3 code, h4 code { font-size: 0.82em; padding: 0.08em 0.32em; }
+h1 a, h2 a, h3 a, h4 a { border-bottom: 0; }
+
+/* ------------------------------ 5. 段落与行内 ------------------------------ */
+p { margin: 0.9em 0; }
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    border-bottom: 1px solid var(--primary-line);
+    padding-bottom: 0.02em;
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+a:hover {
+    color: var(--primary-color-hover);
+    background-color: var(--primary-color-light);
+    border-bottom-color: var(--primary-color);
+    border-radius: 2px;
+}
+a:active { color: var(--primary-color-hover); }
+
+strong, b { font-weight: 700; color: #222e2c; }
+em, i { font-style: italic; }
+
+/* ==高亮==：暖栗琥珀，与冷调主色互补，用作视觉锚点 */
+mark {
+    background-color: var(--mark-bg);
+    color: var(--mark-text);
+    padding: 0.08em 0.34em;
+    border-radius: var(--radius-sm);
+}
+
+/* ~~删除~~ / <u>下划线</u> */
+s, del { color: var(--text-muted); text-decoration-color: var(--border-strong); }
+u, ins {
+    text-decoration: none;
+    border-bottom: 1px solid var(--text-muted);
+    padding-bottom: 0.02em;
+}
+
+sup, sub { font-size: 0.75em; line-height: 0; }
+small { font-size: 0.88em; color: var(--text-muted); }
+
+/* <kbd>：键帽感，浅底双层描边 */
+kbd {
+    display: inline-block;
+    padding: 0.14em 0.45em;
+    font-family: var(--monospace);
+    font-size: 0.82em;
+    line-height: 1.5;
+    color: #33403d;
+    background-color: #f7faf9;
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+}
+
+
+/* -------------------------------- 6. 列表 --------------------------------- */
+ul, ol { margin: 0.8em 0; padding-left: 1.8em; }
+li { margin: 0.3em 0; }
+li > ul, li > ol { margin: 0.25em 0; }
+li > p { margin: 0.3em 0; }
+
+/* 三级项目符号由深到浅，嵌套层级一眼可辨 */
+ul { list-style-type: disc; }
+ul ul { list-style-type: circle; }
+ul ul ul { list-style-type: square; }
+ol { list-style-type: decimal; }
+
+/* 项目符号用主色淡化，序号用中性灰，克制不抢戏 */
+li::marker { color: var(--primary-color); }
+ol > li::marker { color: var(--text-muted); font-weight: 600; }
+
+/* 定义列表 */
+dl { margin: 0.9em 0; }
+dt { font-weight: 700; color: var(--heading-color); margin-top: 0.6em; }
+dd { margin: 0.15em 0 0.7em 1.4em; color: var(--text-color); }
+
+/* ------------------------------ 7. 任务清单 -------------------------------
+   自绘复选框：用 background 画勾（SVG data URI），不依赖字体、不用伪元素，
+   避免"双框"或勾号发糊；选择器带 #write 以压过 Typora base 的
+   `#write input[type=checkbox]{width:inherit;height:inherit}`。
+
+   ⚠️ 垂直对齐的坑：Typora base 里有
+      .md-task-list-item > input { position: absolute; top: 0;
+                                   margin-top: calc(1em - 10px); }
+   复选框是**绝对定位**的，所以 vertical-align 对它是完全无效的声明
+   （这就是以前怎么调都偏高 7~8px 的真正原因）。正确做法是让文字 <p> 保持
+   块级，复选框继续 absolute，但把 top 钉在"首行盒的垂直中点"，再用
+   translateY(-50%) 让框自身居中——这样与字体 ascent/descent 无关，且长句
+   折行时永远贴着第一行。
+   实测（headless Chrome + canvas actualBoundingBox 取字形墨迹中心，
+   14/16/20/24px）：中文 -0.2~-1.3px、折行句 -0.3~-1.3px、紧凑写法 -1~-2px；
+   旧规则为 -5~-13px。想微调只需改 --task-check-shift。               */
+ul.task-list,
+ol.task-list {
+    padding-left: 1.75em;
+    list-style: none;
+}
+
+.task-list-item,
+.md-task-list-item {
+    /* 改这两个变量即可调整任务项行高 / 复选框大小与垂直微调 */
+    --task-line-height: 1.6;
+    --task-check-size: 0.95rem;
+    --task-check-shift: 0.02em;
+    list-style-type: none !important;
+    padding-left: 0.05em;
+    position: relative;                 /* 复选框绝对定位的参照物 */
+    line-height: var(--task-line-height);
+}
+
+/* 文字保持块级：自然折行、多段正常堆叠；行高与 li 一致，
+   于是"首行盒中点"= li 内容顶 + 行高的一半，可被精确计算 */
+.md-task-list-item > p {
+    margin: 0;
+    line-height: var(--task-line-height);
+}
+/* 多段任务：第 2 段起留出段间距 */
+.md-task-list-item > p + p {
+    margin-top: 0.35em;
+}
+
+/* 外观：li 直接子元素与 <p> 内两种 DOM 共用 */
+#write .md-task-list-item input[type="checkbox"] {
+    display: inline-block;
+    box-sizing: border-box;
+    width: var(--task-check-size);
+    height: var(--task-check-size);
+    margin: 0;
+    padding: 0;
+    border: 1.5px solid #93a29e;
+    border-radius: 5px;
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 72% 72%;
+    background-image: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    opacity: 1;
+    outline: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* 定位：li 的直接子元素（Typora 的常规结构）→ 挂到左侧空白，垂直居中于首行 */
+#write .md-task-list-item > input[type="checkbox"] {
+    position: absolute;
+    top: calc(var(--task-line-height) * 0.5em + var(--task-check-shift));
+    left: -1.5em;
+    transform: translateY(-50%);
+}
+
+/* 少数情况下 input 被包在 <p> 内：它本来就在首行文字流里，用中线对齐即可 */
+#write .md-task-list-item > p > input[type="checkbox"] {
+    position: static;
+    vertical-align: middle;
+    margin: 0 0.45em 0 0;
+}
+
+#write .md-task-list-item input[type="checkbox"]:hover { border-color: var(--primary-color); }
+
+/* 勾选态：同时匹配 :checked 与 .task-list-done，双保险；
+   用后代选择器，让 <p> 内的 input 变体也能拿到选中样式 */
+#write .md-task-list-item input[type="checkbox"]:checked,
+#write .md-task-list-item.task-list-done input[type="checkbox"] {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l2.9 2.9 6.1-6.4'/%3E%3C/svg%3E");
+}
+
+/* 已完成的任务：文字淡化并加同色细删除线 */
+.md-task-list-item.task-list-done > p,
+.md-task-list-item.task-list-done {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(109, 122, 119, 0.45);
+    text-decoration-thickness: 1px;
+}
+
+
+/* ----------------------------- 8. 引用与提示卡 ----------------------------- */
+blockquote {
+    margin: 1.25em 0;
+    padding: 0.7em 1.15em;
+    border-left: 3px solid var(--primary-line);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    background-image: linear-gradient(90deg, var(--primary-color-lighter), rgba(15, 118, 110, 0) 72%);
+    color: #4c5957;
+}
+blockquote p { margin: 0.4em 0; }
+blockquote p:first-child { margin-top: 0; }
+blockquote p:last-child { margin-bottom: 0; }
+blockquote ul, blockquote ol { margin: 0.5em 0; }
+blockquote h1, blockquote h2, blockquote h3, blockquote h4 { color: inherit; }
+
+/* 嵌套引用逐层转弱，避免多层色条叠加 */
+blockquote blockquote {
+    border-left-color: var(--border-strong);
+    background-image: linear-gradient(90deg, rgba(109, 122, 119, 0.06), rgba(109, 122, 119, 0) 72%);
+    color: var(--text-muted);
+}
+
+/* GFM 提示卡片 > [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION] */
+.md-alert {
+    margin: 1.2em 0;
+    padding: 0.85em 1.15em;
+    border: 1px solid var(--border-light);
+    border-left: 3px solid var(--text-muted);
+    border-radius: var(--radius-md);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+}
+.md-alert .md-alert-text {
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+.md-alert p:first-child { margin-top: 0; }
+.md-alert p:last-child { margin-bottom: 0; }
+
+.md-alert.md-alert-note      { background-color: #eef6f9; border-left-color: #2b7b96; }
+.md-alert.md-alert-note      .md-alert-text { color: #236a83; }
+.md-alert.md-alert-tip       { background-color: #eef7f0; border-left-color: #34824f; }
+.md-alert.md-alert-tip       .md-alert-text { color: #2b6f44; }
+.md-alert.md-alert-important { background-color: #f3f0fa; border-left-color: #74579e; }
+.md-alert.md-alert-important .md-alert-text { color: #65498c; }
+.md-alert.md-alert-warning   { background-color: #fbf4e6; border-left-color: #a3760f; }
+.md-alert.md-alert-warning   .md-alert-text { color: #8a650f; }
+.md-alert.md-alert-caution   { background-color: #fbefee; border-left-color: #bd4a41; }
+.md-alert.md-alert-caution   .md-alert-text { color: #a63f37; }
+
+/* -------------------------------- 9. 表格 -------------------------------- */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.3em 0;
+    font-size: 0.95rem;
+}
+table th, table td {
+    padding: 0.55em 0.9em;
+    border: 1px solid var(--border-color);
+    line-height: 1.6;
+}
+table thead th {
+    background-color: #eef3f2;
+    color: var(--heading-color);
+    font-weight: 700;
+    border-bottom: 2px solid var(--border-strong);
+    white-space: nowrap;
+}
+table tbody tr:nth-child(2n) td { background-color: rgba(240, 244, 243, 0.55); }
+table tbody tr:hover td { background-color: var(--primary-color-light); }
+table td { color: var(--text-color); }
+table code { white-space: nowrap; }
+table caption {
+    caption-side: top;
+    text-align: left;
+    margin-bottom: 0.5em;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+table code, table tt { background-color: #eef3f1; }
+
+
+/* ---------------------------- 10. 行内代码与代码块 -------------------------- */
+code, tt {
+    font-family: var(--monospace);
+    font-size: 0.88em;
+    padding: 0.1em 0.36em;
+    color: var(--inline-code-text);
+    background-color: var(--inline-code-bg);
+    border: 1px solid var(--inline-code-border);
+    border-radius: var(--radius-sm);
+}
+
+/* 链接里的行内代码：去掉描边避免与链接下划线打架 */
+a code, a tt {
+    color: inherit;
+    background-color: var(--primary-color-light);
+    border-color: transparent;
+}
+
+#write .md-fences {
+    margin: 1.3em 0;
+    padding: 14px 18px;
+    font-family: var(--monospace);
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--code-text);
+    background-color: var(--code-bg);
+    border: 1px solid var(--code-border);
+    border-radius: var(--radius-md);
+    /* 代码块不两端对齐，等宽字体下 justify 会拉出不均匀空隙 */
+    text-align: left;
+    text-align: start;
+}
+#write .md-fences code, #write .md-fences tt {
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+    background-color: transparent;
+    border: 0;
+}
+
+/* 代码块右下角的语言切换提示条 */
+.md-fences .code-tooltip {
+    background-color: #eef3f2;
+    border: 1px solid var(--code-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+.code-tooltip .ty-input { color: var(--text-color); }
+
+.cm-s-inner { background-color: transparent; color: var(--code-text); }
+.cm-s-inner .CodeMirror-gutters {
+    background-color: transparent;
+    border-right: 1px solid var(--code-border);
+    padding-right: 2px;
+}
+.cm-s-inner .CodeMirror-linenumber { color: #a4b1ad; }
+.cm-s-inner .CodeMirror-cursor { border-left: 2px solid var(--primary-color); }
+.cm-s-inner div.CodeMirror-selected { background: rgba(15, 118, 110, 0.14); }
+.cm-s-inner .CodeMirror-selectedtext { color: inherit; }
+.cm-s-inner .cm-error { color: #c0453b; }
+
+/* 语法高亮：青瓷青 / 竹绿 / 琥珀 / 梅红 四色家族，克制不发花 */
+.cm-s-inner .cm-keyword    { color: #a3325f; font-weight: 600; }   /* if / return / def */
+.cm-s-inner .cm-def        { color: #0f766e; font-weight: 600; }   /* 函数、类定义名 */
+.cm-s-inner .cm-builtin    { color: #a3560f; }                     /* 内置对象与函数 */
+.cm-s-inner .cm-variable   { color: var(--code-text); }
+.cm-s-inner .cm-variable-2 { color: #95541f; }
+.cm-s-inner .cm-variable-3 { color: #0b6e8f; }
+.cm-s-inner .cm-string     { color: #1f6f43; }                     /* 字符串 */
+.cm-s-inner .cm-string-2   { color: #1f6f43; }                     /* 正则、模板 */
+.cm-s-inner .cm-number     { color: #b45309; }
+.cm-s-inner .cm-atom       { color: #b45309; }                     /* true / false / null */
+.cm-s-inner .cm-comment    { color: #7d8b88; font-style: italic; }
+.cm-s-inner .cm-property   { color: #0b6e8f; }
+.cm-s-inner .cm-operator   { color: #4d5d59; }
+.cm-s-inner .cm-tag        { color: #0f766e; font-weight: 600; }   /* HTML / XML 标签 */
+.cm-s-inner .cm-attribute  { color: #8a5a00; }                     /* 标签属性 */
+.cm-s-inner .cm-qualifier  { color: #0b6e8f; }                     /* CSS 选择器 */
+.cm-s-inner .cm-meta       { color: #6b7a76; }                     /* #!/shebang、版本声明 */
+.cm-s-inner .cm-bracket    { color: #6b7a76; }
+.cm-s-inner .cm-header     { color: var(--primary-color); }
+.cm-s-inner .cm-link       { color: var(--primary-color); }
+
+
+/* ----------------------------- 11. 图片、目录与其他 ------------------------- */
+img { max-width: 100%; }
+.md-image img {
+    border-radius: var(--radius-md);
+    box-shadow: 0 1px 3px rgba(24, 42, 39, 0.10);
+}
+/* 编辑态下露出的图片路径 / alt 元信息 */
+.md-image > .md-meta {
+    font-family: var(--monospace);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+.md-image > .md-caption, figcaption {
+    display: block;
+    margin-top: 0.5em;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* 表格、图片的 figure 容器不要突破纸面宽度 */
+#write figure { max-width: 100%; margin: 1.2em 0; }
+
+/* 分割线：中间实的、两端淡出的雾状细线 */
+hr {
+    height: 1px;
+    border: 0;
+    margin: 2.4em 0;
+    background-image: linear-gradient(90deg,
+        rgba(199, 211, 208, 0) 0%, var(--border-strong) 18%,
+        var(--border-strong) 82%, rgba(199, 211, 208, 0) 100%);
+}
+
+/* [TOC] 目录：纸上的浅灰绿便签块 */
+.md-toc { margin: 0; }
+#write .md-toc-content {
+    margin: 1.4em 0;
+    padding: 1em 1.4em;
+    line-height: 1.85;
+    background-color: var(--card-bg);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+}
+.md-toc-item { margin: 0.12em 0; }
+.md-toc-h1 { font-weight: 700; }
+.md-toc-h2 { padding-left: 1.2em; }
+.md-toc-h3 { padding-left: 2.4em; }
+.md-toc-h4, .md-toc-h5, .md-toc-h6 { padding-left: 3.6em; font-size: 0.94em; }
+.md-toc-item a { border-bottom: 0; color: var(--text-color); }
+.md-toc-item a:hover { color: var(--primary-color); }
+/* 未渲染时的占位 "[TOC]" 提示 */
+.md-toc-content:empty:before { color: var(--border-strong) !important; font-size: 1.4em !important; }
+
+/* YAML Front Matter / 元信息块 */
+#write pre.md-meta-block {
+    margin: 0 0 1.6em;
+    padding: 0.8em 1em;
+    font-family: var(--monospace);
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    background-color: #f7faf9;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+#write pre.md-meta-block:empty:before { color: var(--border-strong); }
+
+/* 脚注 */
+sup.md-footnote {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color);
+    padding: 0.05em 0.4em;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.75em;
+}
+sup.md-footnote a { border-bottom: 0; color: inherit; }
+.md-footnotes, .footnotes {
+    margin-top: 2.4em;
+    padding-top: 1.1em;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+.md-footnote .md-meta { color: var(--meta-content-color); }
+
+/* Markdown 元字符（编辑态展开的 * # ` [ ] 等） */
+.md-meta, .md-tag, .md-bracket { color: var(--md-char-color); font-size: 0.85em; }
+.md-expand .md-meta { color: var(--meta-content-color); }
+.md-link, .md-url, .md-image-url { color: var(--meta-content-color); }
+.md-expand .md-link, .md-expand .md-url { color: var(--meta-content-color); }
+
+/* 数学公式 */
+.mathjax-block, .md-mathblock { text-align: center; }
+.mathjax-block > .code-tooltip, .md-mathblock > .code-tooltip { background-color: #eef3f2; }
+.md-inline-math script { color: var(--primary-color); font-family: var(--monospace); font-size: 0.85em; }
+mjx-container[jax="SVG"] { direction: ltr; }
+mjx-container[jax="SVG"] > svg { color: var(--text-color); }
+
+/* Mermaid / 流程图 / 时序图 */
+pre[lang="mermaid"], .md-fences.md-focus .mermaid { background-color: var(--bg-color); }
+.md-diagram-panel {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: #fbfdfc;
+    text-align: center;
+}
+.md-fences-adv-panel { color: var(--text-muted); font-size: 0.85rem; }
+
+/* HTML 块：<details> 折叠卡 */
+details {
+    margin: 1em 0;
+    padding: 0.6em 0.9em;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--card-bg);
+}
+summary { cursor: pointer; font-weight: 600; color: var(--heading-color); }
+details[open] summary { margin-bottom: 0.5em; }
+.md-htmlblock-panel {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--code-bg);
+}
+
+
+/* --------------------------- 12. 选中、搜索与写作模式 ----------------------- */
+::selection { background-color: var(--select-text-bg-color); color: var(--select-text-font-color); }
+
+/* 正文中的搜索命中：琥珀底 + 深色字，保证在浅底上足够醒目 */
+.md-search-hit, .md-search-select, .cm-search-hit .cm-search-hit-inner {
+    background-color: var(--search-select-bg-color) !important;
+    color: var(--search-select-text-color) !important;
+    border-radius: 2px;
+    text-shadow: none;
+}
+.md-search-select .md-search-hit-inner { background-color: var(--search-select-bg-color); }
+.ty-table-edit, .md-table-edit, .md-img-resize-bar, .md-table-resize-bar {
+    background-color: var(--primary-color-light);
+    border-color: var(--primary-line);
+}
+
+/* 源码模式（Ctrl+/）：等宽 + 与纸面同底，避免切模式时闪白 */
+#typora-source {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--monospace);
+    line-height: 1.8;
+}
+#typora-source .CodeMirror-lines { max-width: calc(var(--write-max-width) + 40px); }
+#typora-source .CodeMirror-code { font-size: 0.92rem; }
+
+.cm-s-typora-default { background-color: transparent; color: var(--text-color); }
+.cm-s-typora-default .cm-header { color: var(--heading-color); font-weight: 700; }
+.cm-s-typora-default .cm-quote  { color: #4c5957; }
+.cm-s-typora-default .cm-link,
+.cm-s-typora-default .cm-url    { color: var(--primary-color); }
+.cm-s-typora-default .cm-tag    { color: #0f766e; }
+.cm-s-typora-default .cm-keyword{ color: #a3325f; }
+.cm-s-typora-default .cm-string { color: #1f6f43; }
+.cm-s-typora-default .cm-comment,
+.cm-s-typora-default .cm-code   { color: #7d8b88; font-family: var(--monospace); }
+.cm-s-typora-default .cm-meta,
+.cm-s-typora-default .cm-comment-line { color: var(--md-char-color); }
+.cm-s-typora-default .cm-em    { font-style: italic; }
+.cm-s-typora-default .cm-strong{ font-weight: 700; }
+.cm-s-typora-default .cm-hr { color: var(--border-strong); }
+
+/* 聚焦模式：非焦点块整体淡化（--blur-text-color 由 Typora 自己用在源码模式行上） */
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container),
+.on-focus-mode li[cid]:not(.md-focus-container) { opacity: 0.32; }
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) img,
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) svg { opacity: 0.4; }
+.on-focus-mode blockquote:not(.md-focus):not(.md-focus-container) { border-left-color: var(--border-color); }
+/* 打字机模式下首尾块不要留大片空白（会顶开纸片的呼吸感） */
+.ty-on-typewriter-mode #write { padding-bottom: 45vh; }
+
+
+/* ------------------------- 13. 侧边栏、面板与窗口 UI ------------------------ */
+#typora-sidebar {
+    background-color: var(--side-bar-bg-color);
+    border-right: var(--window-border);
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+#typora-sidebar .sidebar-content { background-color: transparent; }
+.sidebar-tabs { border-bottom: 1px solid var(--border-color); }
+.sidebar-tab { color: var(--control-text-color); }
+.sidebar-tab:hover { color: var(--control-text-hover-color); }
+.sidebar-tab.active { color: var(--primary-color); font-weight: 600; }
+#file-library, .outline-content { background-color: transparent; }
+
+/* 文件树 / 文件列表 / 大纲：圆角行 + 柔和选中态 */
+.file-list-item,
+.file-tree-node .file-node-content,
+.outline-item { border-radius: var(--radius-sm); }
+.file-list-item:hover,
+.file-tree-node:hover > .file-node-background,
+.outline-item:hover { background-color: var(--item-hover-bg-color); }
+.file-list-item.active { background-color: var(--active-file-bg-color); }
+.file-tree-node.active > .file-node-background {
+    background-color: var(--active-file-bg-color);
+    border-color: transparent;
+    border-radius: var(--radius-sm);
+}
+.file-tree-node.active .file-node-title,
+.outline-item-active > .outline-item .outline-label { color: var(--active-file-text-color); }
+.outline-item.select, .ty-search-item.select { outline-color: var(--primary-color); }
+.outline-expander { color: var(--text-muted); }
+.file-list-item-file-name, .file-node-title { color: inherit; }
+.file-list-item-active-bg, .file-node-background { border: 0; }
+.outline-item:hover .outline-label { color: var(--control-text-hover-color); }
+#outline-btn, .outline-title, .sidebar-footer, .ty-sidebar-footer { color: var(--control-text-color); }
+
+/* 侧边栏搜索 */
+.ty-sidebar-search-panel .ty-input, #file-library-search-input,
+#typora-quick-open-input input {
+    background-color: #ffffff;
+    border-color: var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+}
+.ty-search-item-line:hover { background-color: var(--item-hover-bg-color); border-radius: var(--radius-sm); }
+.ty-search-item.active .ty-search-item-line { background-color: var(--active-file-bg-color); }
+.ty-file-search-match-text, .ty-match {
+    background-color: var(--search-select-bg-color);
+    color: var(--search-select-text-color);
+}
+
+/* 快速打开（Ctrl+P）与下拉菜单：白底浮层，不用桌面灰 */
+#typora-quick-open {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-pop);
+    color: var(--text-color);
+    padding: 6px;
+}
+.typora-quick-open-item {
+    background-color: transparent;
+    color: var(--text-color);
+    border-radius: var(--radius-sm);
+}
+.typora-quick-open-item.active,
+.typora-quick-open-item:hover {
+    background-color: var(--active-file-bg-color);
+    color: var(--active-file-text-color);
+}
+.ty-dropdown-menu, .dropdown-menu, .popover, .typora-dialog, .modal-content {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-pop);
+    color: var(--text-color);
+}
+.modal-header, .modal-footer { border-color: var(--border-light); }
+.ty-dropdown-menu > li > a { color: var(--text-color); }
+.ty-dropdown-menu > li:hover > a,
+.dropdown-menu > li:hover > a {
+    background-color: var(--item-hover-bg-color);
+    color: var(--item-hover-text-color);
+}
+
+/* 按钮 */
+.btn, button {
+    background-color: #ffffff;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    color: var(--text-color);
+}
+.btn:hover, button:hover {
+    background-color: var(--item-hover-bg-color);
+    border-color: var(--primary-line);
+    color: var(--control-text-hover-color);
+}
+.btn-primary, .primary-btn, .btn-primary:focus {
+    background-color: var(--primary-color);
+    border-color: var(--primary-btn-border-color);
+    color: var(--primary-btn-text-color);
+}
+.btn-primary:hover, .primary-btn:hover { background-color: var(--primary-color-hover); color: #ffffff; }
+
+
+/* 表格编辑工具条、图片缩放手柄等浮层 */
+.md-table-edit, .md-toolbar, .code-toolbar, .md-img-edit {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-pop);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+}
+
+/* 通知条与底部状态栏 */
+#md-notification, .md-notification-container {
+    background-color: #fbf4e6;
+    color: #6f5310;
+    border-bottom: 1px solid #e8d6ae;
+}
+#ty-footer, .ty-footer {
+    background-color: var(--side-bar-bg-color);
+    border-top: 1px solid var(--border-color);
+    color: var(--control-text-color);
+}
+#ty-footer .ty-footer-menu-btn:hover { color: var(--primary-color); }
+
+/* Windows unibody：主菜单与偏好设置面板同样是 HTML 绘制的 */
+#top-titlebar, #top-titlebar *,
+.megamenu-menu, .megamenu-menu-list, .megamenu-menu-panel {
+    background-color: var(--side-bar-bg-color);
+    color: var(--text-color);
+}
+.megamenu-content { background-color: var(--desk-color); }
+.megamenu-menu-panel, .megamenu-menu-header { background-color: var(--side-bar-bg-color); }
+.megamenu-menu-list li a { color: var(--text-color); }
+.megamenu-menu-list li a.active,
+.megamenu-menu-list li a:hover {
+    background-color: var(--active-file-bg-color);
+    color: var(--active-file-text-color);
+}
+.ty-preferences, .ty-preferences .window-content { background-color: var(--bg-color); color: var(--text-color); }
+.ty-preferences .nav-group-item.active { background-color: var(--active-file-bg-color); color: var(--active-file-text-color); }
+.megamenu-documents-item:hover, .megamenu-documents-item.active { background-color: var(--item-hover-bg-color); }
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state { visibility: visible; }
+
+/* 滚动条：细、圆、无轨道 */
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background-color: transparent; }
+::-webkit-scrollbar-thumb {
+    background-color: rgba(109, 122, 119, 0.32);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover { background-color: rgba(76, 89, 87, 0.5); }
+::-webkit-scrollbar-corner { background-color: transparent; }
+
+/* ------------------------------ 14. 导出与打印 ------------------------------
+   导出 HTML（根元素带 .typora-export）与 PDF/打印时，纸片外框没有意义，
+   统一回到纯白一页，并做分页保护。                                   */
+.typora-export { background-color: #ffffff; }
+.typora-export #write {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #ffffff;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+@media print {
+    html { font-size: 13px; }
+    html, body { background-color: #ffffff !important; }
+    #write {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        background-color: #ffffff !important;
+        border: 0;
+        box-shadow: none;
+    }
+    /* 标题不与后文分离，代码块 / 引用 / 表格行不跨页 */
+    h1, h2, h3, h4, h5, h6 { page-break-after: avoid; break-after: avoid-page; }
+    pre, blockquote, .md-fences, table, tr, figure { page-break-inside: avoid; break-inside: avoid; }
+    a { color: var(--primary-color); border-bottom: 0; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: var(--text-muted); }
+    /* 保留代码块与表格表头的浅底 */
+    .typora-export *, * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .md-fences, #write .md-fences { background-color: var(--code-bg) !important; }
+    .md-fences .CodeMirror,
+    .md-fences .CodeMirror-scroll,
+    .md-fences .CodeMirror-lines,
+    .md-fences .CodeMirror-code,
+    .cm-s-inner { background-color: var(--code-bg) !important; }
+}

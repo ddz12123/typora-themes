@@ -1,0 +1,475 @@
+/* ==========================================================================
+   Geek Tech (极客工程) — 高效硬朗、GitHub & VSCode 浅色工程风
+   设计理念：
+   1. 工程：GitHub Primer 设计系统、严谨网格、硬朗层次。
+   2. 代码：VSCode Light+ 语义高亮、清晰行号、精准细线。
+   3. 文档：技术手册式标题、徽章式标签、规范表格。
+   ========================================================================== */
+
+:root {
+    --bg-color: #ffffff;
+    --side-bar-bg-color: #f6f8fa;
+    --text-color: #24292f;
+    --text-muted: #57606a;
+
+    --primary-color: #0969da;
+    --primary-color-hover: #0550ae;
+    --primary-color-light: #ddf4ff;
+    --primary-btn-border-color: rgba(27, 31, 36, 0.15);
+    --primary-btn-text-color: #ffffff;
+
+    --border-color: #d0d7de;
+    --window-border: 1px solid #d0d7de;
+
+    --md-char-color: #afb8c1;
+    --meta-content-color: #0969da;
+
+    --active-file-bg-color: #eaeef2;
+    --active-file-text-color: #0969da;
+    --active-file-border-color: #0969da;
+    --item-hover-bg-color: rgba(208, 215, 222, 0.32);
+    --item-hover-text-color: #24292f;
+    --control-text-color: #57606a;
+    --control-text-hover-color: #24292f;
+
+    --select-text-bg-color: #b6e3ff;
+    --select-text-font-color: inherit;
+    --search-select-bg-color: #ffdf5d;
+    --search-select-text-color: #24292f;
+    --blur-text-color: rgba(36, 41, 47, 0.3);
+
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    --monospace: "JetBrains Mono", "Cascadia Code", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 44px 100px;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+@media only screen and (min-width: 1400px) { #write { max-width: 1040px; } }
+@media only screen and (min-width: 1800px) { #write { max-width: 1200px; } }
+
+
+/* 标题系统：硬朗规整，技术文档层次感强 */
+h1, h2, h3, h4, h5, h6 {
+    color: #1f2328;
+    font-weight: 600;
+    line-height: 1.3;
+    cursor: text;
+    margin-top: 1.5em;
+    margin-bottom: 0.6em;
+}
+
+h1 {
+    font-size: 2rem;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border-color);
+    margin-top: 1em;
+}
+
+h2 {
+    font-size: 1.5rem;
+    padding-bottom: 0.28em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1rem; }
+h5 { font-size: 0.875rem; color: var(--text-muted); }
+h6 { font-size: 0.85rem; color: var(--text-muted); }
+
+/* 段落与通用内联元素 */
+p {
+    margin: 0.8em 0;
+    word-break: break-word;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+strong { font-weight: 600; color: #1f2328; }
+em { font-style: italic; }
+
+mark {
+    background-color: #fff8c5;
+    color: #24292f;
+    padding: 0.1em 0.3em;
+    border-radius: 2px;
+}
+
+del { color: #6e7781; }
+
+u {
+    text-decoration: none;
+    border-bottom: 1px solid var(--text-color);
+}
+
+kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font-size: 11px;
+    line-height: 10px;
+    color: #24292f;
+    vertical-align: middle;
+    background-color: #f6f8fa;
+    border: 1px solid rgba(175, 184, 193, 0.4);
+    border-bottom-color: rgba(175, 184, 193, 0.8);
+    border-radius: 4px;
+    box-shadow: inset 0 -1px 0 rgba(175, 184, 193, 0.4);
+}
+
+hr {
+    height: 0.2em;
+    background-color: #d0d7de;
+    border: 0;
+    margin: 1.8em 0;
+}
+
+/* 引用块 */
+blockquote {
+    margin: 1em 0;
+    padding: 0.5em 1em;
+    color: #57606a;
+    border-left: 0.25em solid #d0d7de;
+    background-color: #f6f8fa;
+    border-radius: 0 4px 4px 0;
+}
+
+blockquote p { margin: 0.4em 0; }
+blockquote p:first-child { margin-top: 0; }
+blockquote p:last-child { margin-bottom: 0; }
+
+/* 列表与 GitHub 风格复选框 */
+ul, ol {
+    margin: 0.8em 0;
+    padding-left: 2em;
+}
+
+li { margin: 0.25em 0; }
+li > ul, li > ol { margin: 0.15em 0; }
+
+.task-list-item { list-style-type: none; padding-left: 0; }
+.md-task-list-item > input {
+    margin-right: 0.5em;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+/* 规范技术表格 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.2em 0;
+    font-size: 0.9rem;
+}
+
+table th, table td {
+    border: 1px solid #d0d7de;
+    padding: 6px 13px;
+}
+
+table thead th {
+    background-color: #f6f8fa;
+    color: #24292f;
+    font-weight: 600;
+    text-align: left;
+}
+
+table tbody tr:nth-child(2n) { background-color: #f6f8fa; }
+table tbody tr:hover { background-color: #f3f4f6; }
+
+/* 行内代码与代码块 */
+code, tt {
+    font-family: var(--monospace);
+    font-size: 85%;
+    background-color: rgba(175, 184, 193, 0.2);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+}
+
+.md-fences,
+#write .md-fences,
+pre.md-fences {
+    font-family: var(--monospace);
+    font-size: 85%;
+    line-height: 1.5;
+    background-color: #f6f8fa !important;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 1.2em 0;
+}
+
+.md-fences .CodeMirror,
+.md-fences .CodeMirror-scroll,
+.md-fences .CodeMirror-sizer,
+.md-fences .CodeMirror-lines,
+.md-fences .CodeMirror-code {
+    background-color: #f6f8fa !important;
+    font-family: var(--monospace);
+}
+
+.md-fences .CodeMirror-gutters {
+    background-color: #f6f8fa !important;
+    border-right: 1px solid #d0d7de;
+    padding-right: 4px;
+    margin-right: 8px;
+}
+
+.md-fences .CodeMirror-linenumber { color: #8c959f; }
+.md-fences .CodeMirror-cursor { border-left: 2px solid #0969da !important; }
+
+.md-fences .code-tooltip {
+    background-color: #eaeef2;
+    color: #57606a;
+    border: 1px solid #d0d7de;
+    border-radius: 4px;
+}
+
+/* VSCode Light+ / GitHub 现代高亮方案 */
+.cm-s-inner { background-color: #f6f8fa !important; color: #24292f; }
+.cm-s-inner div.CodeMirror-selected,
+.cm-s-inner.CodeMirror-focused div.CodeMirror-selected {
+    background: rgba(9, 105, 218, 0.15) !important;
+}
+
+.cm-s-inner .cm-keyword { color: #cf222e; font-weight: 600; }
+.cm-s-inner .cm-def { color: #8250df; font-weight: 600; }
+.cm-s-inner .cm-variable { color: #24292f; }
+.cm-s-inner .cm-variable-2 { color: #953800; }
+.cm-s-inner .cm-variable-3 { color: #0550ae; }
+.cm-s-inner .cm-string { color: #0a3069; }
+.cm-s-inner .cm-string-2 { color: #116329; }
+.cm-s-inner .cm-number { color: #0550ae; }
+.cm-s-inner .cm-atom { color: #0550ae; }
+.cm-s-inner .cm-comment { color: #6e7781; font-style: italic; }
+.cm-s-inner .cm-property { color: #0550ae; }
+.cm-s-inner .cm-attribute { color: #116329; }
+.cm-s-inner .cm-operator { color: #0550ae; }
+.cm-s-inner .cm-tag { color: #116329; font-weight: 600; }
+.cm-s-inner .cm-builtin { color: #953800; }
+.cm-s-inner .cm-meta { color: #6e7781; }
+.cm-s-inner .cm-header { color: #0969da; font-weight: 600; }
+.cm-s-inner .cm-link { color: #0969da; }
+
+.cm-s-typora-default .cm-header { color: #0969da; font-weight: 600; }
+.cm-s-typora-default .cm-link { color: #0969da; }
+.cm-s-typora-default .cm-comment { color: #6e7781; }
+
+/* UI 细节 */
+#typora-sidebar {
+    background-color: var(--side-bar-bg-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.file-list-item.active,
+.file-tree-node.active > .file-node-background {
+    background-color: var(--active-file-bg-color) !important;
+}
+
+.md-toc {
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 12px 18px;
+}
+
+.md-toc:before {
+    content: "Contents";
+    display: block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #57606a;
+    margin-bottom: 8px;
+}
+
+.md-toc-item a { color: #24292f; text-decoration: none; }
+.md-toc-item a:hover { color: var(--primary-color); text-decoration: underline; }
+
+.outline-item:hover { background: var(--item-hover-bg-color); }
+.outline-item.active,
+.outline-item.outline-item-active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+#write pre.md-meta-block {
+    font-family: var(--monospace);
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: #57606a;
+}
+
+sup.md-footnote {
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+    padding: 1px 5px;
+    border-radius: 3px;
+}
+
+.md-math-block {
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 1.2em 0;
+}
+
+/* 提示卡片 (Callouts / GFM Alerts) — GitHub Primer Alert */
+.md-alert {
+    padding: 8px 16px;
+    margin: 1.2em 0;
+    border-left: 0.25em solid var(--primary-color);
+    border-radius: 0 6px 6px 0;
+    background-color: #f6f8fa;
+    color: #24292f;
+}
+
+.md-alert-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.md-alert p:first-child { margin-top: 0; }
+.md-alert p:last-child { margin-bottom: 0; }
+
+.md-alert.md-alert-note {
+    background-color: #ddf4ff;
+    border-left-color: #0969da;
+}
+.md-alert.md-alert-note .md-alert-text { color: #0969da; }
+
+.md-alert.md-alert-tip {
+    background-color: #dafbe1;
+    border-left-color: #1f883d;
+}
+.md-alert.md-alert-tip .md-alert-text { color: #1a7f37; }
+
+.md-alert.md-alert-important {
+    background-color: #fbefff;
+    border-left-color: #8250df;
+}
+.md-alert.md-alert-important .md-alert-text { color: #8250df; }
+
+.md-alert.md-alert-warning {
+    background-color: #fff8c5;
+    border-left-color: #9a6700;
+}
+.md-alert.md-alert-warning .md-alert-text { color: #7d4e00; }
+
+.md-alert.md-alert-caution {
+    background-color: #ffebe9;
+    border-left-color: #cf222e;
+}
+.md-alert.md-alert-caution .md-alert-text { color: #cf222e; }
+/* 脚注、元信息、图表与 UI 细节 */
+sup.md-footnote {
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.md-footnotes {
+    margin-top: 2.2em;
+    padding-top: 1.2em;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.md-meta, .md-tag { color: var(--meta-content-color); font-size: 85%; }
+.md-url { color: var(--meta-content-color); }
+.md-image > .md-meta { font-size: 0.8rem; color: #6e7781; }
+
+.md-diagram-panel {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: #f6f8fa;
+}
+
+.md-fences-adv-panel { color: var(--text-muted); font-size: 0.85rem; }
+
+/* 源码模式 */
+#typora-source { font-family: var(--monospace); }
+#typora-source .CodeMirror-lines { max-width: 980px; }
+
+.cm-s-typora-default .cm-header { color: #1f2328; font-weight: 700; }
+.cm-s-typora-default .cm-link { color: var(--primary-color); }
+.cm-s-typora-default .cm-comment { color: #6e7781; }
+.cm-s-typora-default .cm-keyword { color: #cf222e; }
+.cm-s-typora-default .cm-string { color: #0a3069; }
+
+/* 专注模式 */
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) {
+    opacity: 0.35;
+}
+
+.on-focus-mode blockquote {
+    border-left-color: rgba(36, 41, 47, 0.15);
+}
+
+/* UI 细节 */
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state {
+    visibility: visible;
+}
+
+.megamenu-menu,
+#top-titlebar, #top-titlebar *,
+.megamenu-content {
+    background-color: var(--side-bar-bg-color);
+    color: var(--text-color);
+}
+
+.megamenu-menu-list li a.active,
+.megamenu-menu-list li a:hover {
+    background-color: var(--active-file-bg-color);
+    color: var(--active-file-text-color);
+}
+
+
+
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background-color: #d0d7de; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background-color: #afb8c1; }
+
+@media print {
+    html { font-size: 13px; }
+    body, #write { background-color: #ffffff !important; padding: 0; }
+    pre, blockquote, table { page-break-inside: avoid; }
+    h1, h2, h3 { page-break-after: avoid; }
+    .md-fences, #write .md-fences { background: #f6f8fa !important; }
+    .md-fences .CodeMirror,
+    .md-fences .CodeMirror-scroll,
+    .md-fences .CodeMirror-lines,
+    .md-fences .CodeMirror-code { background: #f6f8fa !important; }
+}
